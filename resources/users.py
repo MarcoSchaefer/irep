@@ -47,21 +47,6 @@ def ChangePicture():
     db.session.commit()
     return jsonify({'status':'success'}), 200
 
-@bp_users.route('/me/coins', methods = ['POST'])
-@Auth
-def AddCoins():
-    coins = int(request.form['coins'])
-    secret = request.form['secret']
-    if not secret == COIN_SECRET:
-        return jsonify({'error':'not authorized'}), 403
-    if coins <= 0:
-        return jsonify({'error':'invalid value'}), 400
-    user_id = GetUserID()
-    user = User.query.filter_by(id = user_id).first()
-    user.coins += coins
-    db.session.commit()
-    return jsonify({'status':'success'}), 200
-
 @bp_users.route('/', methods = ['POST'])
 def Register():
     if not isValidEmail(request.form['email']):
@@ -105,23 +90,6 @@ def GetOwnInfo():
         return jsonify({'error':"user not found"}), 500
     return jsonify(user.toJSON()), 200
 
-@bp_users.route('/me/inventory', methods = ['GET'])
-@Auth
-def GetOwnInventory():
-    user_id = GetUserID()
-    user = User.query.filter_by(id=user_id).first()
-    if not user:
-        return jsonify({'error':"user not found"}), 500
-    items = ""
-    for i in user.inventory:
-        items += str(i.item_id)+","
-    items = items[:-1]
-    items_request = requests.get(ITEMS_SERVICE_URL+str(items), headers={"Authorization":request.headers.get('authorization')})
-    if items_request.status_code >= 400:
-        return jsonify(items_request.json()), items_request.status_code
-    items = items_request.json()
-    return jsonify(items), 200
-
 @bp_users.route('/<int:user_id>', methods = ['GET'])
 @Auth
 def GetUserInfo(user_id):
@@ -129,27 +97,6 @@ def GetUserInfo(user_id):
     if not user:
         return jsonify({'error':"user not found"}), 500
     return jsonify(user.toJSONmin()), 200
-
-@bp_users.route('/me/payment', methods = ['POST'])
-@Auth
-def PayItem():
-    item_id = int(request.form['item_id'])
-    user_id = GetUserID()
-    user = User.query.filter_by(id = user_id).first()
-    if not user:
-        return jsonify({'error':"user not found"}), 500
-    item_request = requests.get(ITEMS_SERVICE_URL+str(item_id), headers={"Authorization":request.headers.get('authorization')})
-    if item_request.status_code >= 400:
-        return jsonify(item_request.json()), item_request.status_code
-    item = item_request.json()[0]
-    if not user.addItem(item_id):
-        return jsonify({'error':"you already have this item"}), 400
-    if user.coins < item['price']:
-        return jsonify({'error':"insufficient coins"}), 400
-    user.coins -= item['price']
-    db.session.commit()
-    return jsonify({'status':"success"}), 200
-
 
 @bp_users.route('/FBlogin', methods = ['POST'])
 def FBLogin():
