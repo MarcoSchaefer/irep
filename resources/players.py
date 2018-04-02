@@ -11,9 +11,9 @@ from guard import Auth, GetUserID
 import requests
 
 
-bp_player = Blueprint('bp_player', __name__)
+bp_players = Blueprint('bp_players', __name__)
 
-@bp_player.route('/', methods = ['GET'])
+@bp_players.route('/', methods = ['GET'])
 @Auth
 def Ping():
     return "pong",200;

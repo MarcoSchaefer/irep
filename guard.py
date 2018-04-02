@@ -2,7 +2,6 @@ from flask import request, jsonify
 import time
 from functools import wraps
 
-from config import SESSION_SERVICE_URL
 import requests
 
 def Auth(f):

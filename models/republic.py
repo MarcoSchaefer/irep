@@ -6,7 +6,7 @@ if parentPath not in sys.path:
     sys.path.insert(0, parentPath)
 
 from main import db
-from models.player import Player
+#from models.player import Player
 from models.team import Team
 
 class Republic(db.Model):

@@ -17,9 +17,19 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 db = SQLAlchemy(app)
 
-#from resources.users import bp_users
+from resources.users import bp_users
+from resources.market import bp_market
+from resources.players import bp_players
+from resources.republics import bp_republics
+from resources.teams import bp_teams
 
-#app.register_blueprint(bp_users)
+
+app.register_blueprint(bp_users)
+app.register_blueprint(bp_players)
+app.register_blueprint(bp_republics)
+app.register_blueprint(bp_users)
+app.register_blueprint(bp_teams)
+
 
 @app.route('/', methods=['GET'])
 def Ping():

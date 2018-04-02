@@ -10,7 +10,7 @@ if parentPath not in sys.path:
 from main import db
 from models.user import User
 from utils import encrypt, isValidEmail, allowed_file
-from config import PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, ITEMS_SERVICE_URL, ALLOWED_EXTENSIONS, UPLOAD_FOLDER, COIN_SECRET
+from config import PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from guard import Auth, GetUserID
 import requests
 

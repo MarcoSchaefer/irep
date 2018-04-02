@@ -11,9 +11,9 @@ from guard import Auth, GetUserID
 import requests
 
 
-bp_republic = Blueprint('bp_republic', __name__)
+bp_republics = Blueprint('bp_republics', __name__)
 
-@bp_republic.route('/', methods = ['GET'])
+@bp_republics.route('/', methods = ['GET'])
 @Auth
 def Ping():
     return "pong",200;

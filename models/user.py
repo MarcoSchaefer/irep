@@ -7,7 +7,7 @@ if parentPath not in sys.path:
 
 from main import db
 from models.role import Role
-from models.team import Team
+#from models.team import Team
 
 class User(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
