@@ -1,4 +1,5 @@
 from sqlalchemy.dialects import mysql
+from sqlalchemy.ext.declarative import declarative_base
 
 import os, sys
 parentPath = os.path.abspath("..")
@@ -7,12 +8,7 @@ if parentPath not in sys.path:
 
 from main import db
 
-class Playercall(db.Model):
-    player_id = db.Column(mysql.INTEGER(50), db.ForeignKey('player.id'), primary_key=True)
-    team_id = db.Column(mysql.INTEGER(50), db.ForeignKey('team.id'), primary_key=True)
-
-    def toJSON(self):
-        return {
-            'player_id': self.player_id,
-            'team_id': self.team_id
-            }
+playercall_table = db.Table('playercall',
+    db.Column('player_id', mysql.INTEGER(50), db.ForeignKey('player.id'), primary_key=True),
+    db.Column('team_id', mysql.INTEGER(50), db.ForeignKey('team.id'), primary_key=True)
+    )

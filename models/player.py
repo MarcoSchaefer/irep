@@ -10,21 +10,17 @@ from main import db
 
 class Positions(enum.Enum):
     Goleiro = 1
-    Lateral = 2
-    Zagueiro = 3
-    Meia = 4
-    Atacante = 5
+    Linha = 2
 
 class Player(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=True)
-    republic_id = db.Column(db.Integer, db.ForeignKey('republic.id'))
+    republic_id = db.Column(db.Integer, db.ForeignKey('republic.id'),nullable=False)
     republic = db.relationship("Republic")
-    teams = db.relationship("Playercall")
-    picture = db.Column(db.Text, unique=False, nullable=True)
     position = db.Column(Enum(Positions), unique=False, nullable=False)
     value = db.Column(mysql.INTEGER(50), unique=False, nullable=False)
-
+    benched = db.Column(db.Boolean, unique=False, nullable=False)
+    agregado = db.Column(db.Boolean, unique=False, nullable=False)
 
     def __repr__(self):
         return '<id:%r>' % (self.id)
@@ -33,10 +29,11 @@ class Player(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'republic':self.republic.toJSON(),
+            'republic':self.republic.toJSONmin(),
             'position': self.position.name,
             'value':self.value,
-            'picture': self.picture
+            'benched': self.benched,
+            'agregado': self.agregado
             }
 
     def toJSONmin(self):
@@ -44,6 +41,5 @@ class Player(db.Model):
             'id': self.id,
             'name': self.name,
             'position': self.position.name,
-            'value':self.value,
-            'picture': self.picture
+            'value':self.value
             }

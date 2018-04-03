@@ -6,14 +6,14 @@ if parentPath not in sys.path:
     sys.path.insert(0, parentPath)
 
 from main import db
+from models.playercall import playercall_table
 
 class Team(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    user = db.relationship("User")
-    players = db.relationship("Playercall")
-    formation = db.Column(db.String(120), unique=False, nullable=False)
+    user = db.relationship("User", back_populates="teams")
+    players = db.relationship("Player",secondary=playercall_table)
     points = db.Column(mysql.INTEGER(50), unique=False, nullable=False)
     last_points = db.Column(mysql.INTEGER(50), unique=False, nullable=True)
 
@@ -26,9 +26,8 @@ class Team(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'formation': self.formation,
             'points':self.points,
-            'last_points':last_points,
+            'last_points':self.last_points,
             'user': self.user.toJSON(),
-            'players':self.players.toJSON()
+            'players':[p.toJSON() for p in self.players]
             }

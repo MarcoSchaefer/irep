@@ -17,7 +17,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 db = SQLAlchemy(app)
 
-from models.playercall import Playercall
+from models.playercall import playercall_table
 from resources.users import bp_users
 from resources.market import bp_market
 from resources.players import bp_players

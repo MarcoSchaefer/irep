@@ -44,5 +44,5 @@ def CheckPermission(f):
             if not getattr(user.role,p):
                 return jsonify({'error':'insufficient permissions'}), 401
         return f(*args, **kwargs)
-    #decorated.__name__ = f.__name__
+    decorated.__name__ = f.__name__
     return decorated

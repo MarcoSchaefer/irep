@@ -18,5 +18,10 @@ MAX_CONTENT_LENGTH = 2 * 1024 * 1024
 
 PERMISSIONS_REQUIRED = {
     'CreateRepublic':['create_rep'],
-    'CreatePlayer':['create_player']
+    'CreatePlayer':['create_player'],
+    'ModifyRepublic':['modify_rep'],
+    'ModifyPlayer':['modify_player'],
+    'DeleteRepublic':['delete_rep'],
+    'DeletePlayer':['delete_player'],
+    'ToggleMarket':['toggle_market']
     }

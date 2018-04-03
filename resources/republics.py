@@ -36,8 +36,34 @@ def CreateRepublic():
         return jsonify({'error':'republic already registered'}), 400
     rep = Republic(
         name = request.form['name'],
-        address = request.form['address']
+        address = request.form['address'],
+        picture = request.form['picture']
     )
     db.session.add(rep)
+    db.session.commit()
+    return jsonify(rep.toJSON()), 201
+
+@bp_republics.route('/<int:rep_id>', methods = ['DELETE'])
+@Auth
+@CheckPermission
+def DeleteRepublic(rep_id):
+    rep = Republic.query.filter_by(id=rep_id).first()
+    if not rep:
+        return jsonify({'error':'republic not found'}), 404
+    db.session.delete(rep)
+    db.session.commit()
+    return jsonify({'status':'deleted'}), 201
+
+@bp_republics.route('/<int:rep_id>', methods = ['PUT'])
+@Auth
+@CheckPermission
+def ModifyRepublic(rep_id):
+    rep = Republic.query.filter_by(id=rep_id).first()
+    if not rep:
+        return jsonify({'error':'republic not found'}), 404
+    rep.name = request.form['name']
+    rep.address = request.form['address']
+    rep.picture = request.form['picture']
+    db.session.merge(rep)
     db.session.commit()
     return jsonify(rep.toJSON()), 201

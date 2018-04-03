@@ -11,7 +11,7 @@ class Republic(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
     address = db.Column(db.Text, unique=False, nullable=False)
-    players = db.relationship("Player")
+    players = db.relationship("Player", cascade="delete")
     picture = db.Column(db.Text, unique=False, nullable=True)
 
 
@@ -25,4 +25,12 @@ class Republic(db.Model):
             'address': self.address,
             'picture': self.picture,
             'players':[p.toJSONmin() for p in self.players]
+            }
+
+    def toJSONmin(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'address': self.address,
+            'picture': self.picture
             }

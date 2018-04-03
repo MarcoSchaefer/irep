@@ -16,7 +16,7 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
     role = db.relationship("Role")
     regDate = db.Column(mysql.INTEGER(50), unique=False, nullable=False)
-    team = db.relationship("Team")
+    teams = db.relationship("Team", back_populates="user")
     picture = db.Column(db.Text, unique=False, nullable=True)
     coins = db.Column(mysql.INTEGER(50), primary_key=True)
 
