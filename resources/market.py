@@ -28,3 +28,13 @@ def ToggleMarket():
     db.session.merge(market)
     db.session.commit()
     return jsonify(market.toJSON()),200;
+
+@bp_market.route('/deadline', methods = ['PUT'])
+@Auth
+@CheckPermission
+def SetDeadline():
+    market = Market.query.first()
+    market.deadline = request.form['deadline']
+    db.session.merge(market)
+    db.session.commit()
+    return jsonify(market.toJSON()),200;

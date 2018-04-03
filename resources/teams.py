@@ -8,6 +8,7 @@ if parentPath not in sys.path:
 from main import db
 from models.team import Team
 from models.player import Player
+from models.market import Market
 from guard import Auth, GetUserID, getUserFromRequest
 import requests
 
@@ -39,13 +40,39 @@ def AddPlayerToTeam():
         return jsonify({"error":"player not found"}), 400
     if user.coins < player.value:
         return jsonify({"error":"insufficient coins"}), 401
-    print(player.position)
+    has_gk = False
+    for p in user.teams[0].players:
+        if p.position.name=="Goleiro":
+            has_gk = True
     if player in user.teams[0].players:
         return jsonify({"error":"you already have this player in your team"}), 400
+    if has_gk and player.position.name == "Goleiro":
+        return jsonify({"error":"you already have a goalkeeper"}), 400
+    if player.benched:
+        return jsonify({"error":"this player is benched"}), 400
     user.teams[0].players.append(player)
     user.coins = user.coins - player.value
     db.session.commit()
     return jsonify(user.teams[0].toJSON()),200;
+
+@bp_teams.route('/me/players/<int:player_id>', methods = ['DELETE'])
+@Auth
+def SellPlayer(player_id):
+    player = Player.query.filter_by(id = player_id).first()
+    if not player:
+        return jsonify({"error":"player not found"}), 400
+    user = getUserFromRequest()
+    if len(user.teams) == 0:
+        return jsonify({"error":"you don't have a team"}), 400
+    market = Market.query.first()
+    if not market.open:
+        return jsonify({"error":"the market is closed"}), 400
+    if player not in user.teams[0].players:
+        return jsonify({"error":"this player isn't in your team"}), 400
+    user.coins = user.coins + player.value
+    user.teams[0].players.remove(player)
+    db.session.commit()
+    return jsonify({"status":"sold"}),201
 
 @bp_teams.route('/', methods = ['POST'])
 @Auth

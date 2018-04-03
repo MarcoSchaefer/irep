@@ -1,5 +1,4 @@
 from sqlalchemy.dialects import mysql
-from sqlalchemy.ext.declarative import declarative_base
 
 import os, sys
 parentPath = os.path.abspath("..")

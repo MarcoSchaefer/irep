@@ -23,5 +23,7 @@ PERMISSIONS_REQUIRED = {
     'ModifyPlayer':['modify_player'],
     'DeleteRepublic':['delete_rep'],
     'DeletePlayer':['delete_player'],
-    'ToggleMarket':['toggle_market']
+    'ToggleMarket':['toggle_market'],
+    'SetDeadline':['toggle_market'],
+    'ModifyPlayerValue':['modify_player']
     }
