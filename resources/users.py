@@ -98,32 +98,6 @@ def GetUserInfo(user_id):
         return jsonify({'error':"user not found"}), 500
     return jsonify(user.toJSONmin()), 200
 
-@bp_users.route('/FBlogin', methods = ['POST'])
-def FBLogin():
-    FBtoken = request.headers.get('authorization')
-    print(FBtoken)
-    fbresponse = requests.post("https://graph.facebook.com/me?fields=name,picture,email", headers={"Authorization":FBtoken})
-    if fbresponse.status_code >= 400:
-        print(fbresponse)
-        return jsonify({'error':'invalid token'}), 401
-    fbresponse = fbresponse.json()
-    if not fbresponse['email']:
-        return jsonify({'error':"facebook api didn't returned any email"}), 500
-    user = User.query.filter_by(email=fbresponse['email']).first()
-    if user:
-        return jsonify(user.toJSON()), 200
-    user = User(
-        email = fbresponse['email'],
-        name = fbresponse['name'],
-        role_id = 1,
-        regDate = time.time(),
-        coins = 0,
-        picture = fbresponse['picture']['data']['url']
-    )
-    db.session.add(user)
-    db.session.commit()
-    return jsonify(user.toJSON()), 201
-
 @bp_users.route('/me', methods = ['PUT'])
 @Auth
 def EditProfile():
@@ -136,19 +110,4 @@ def EditProfile():
     user.name = name
     user.birthday = birthday
     db.session.commit()
-    return jsonify(user.toJSON()), 200
-
-@bp_users.route('/login', methods = ['POST'])
-def Login():
-    email = request.form['email']
-    password = request.form['password']
-    if len(password):
-        password = encrypt(password)
-    user = User.query.filter_by(email=request.form['email']).first()
-    if not user.password:
-        return jsonify({'error':'this account can only be accessed through facebook authentication'}), 400
-    if not user:
-        return jsonify({'error':'email not registered'}), 400
-    if not user.password == password:
-        return jsonify({'error':'wrong password'}), 400
     return jsonify(user.toJSON()), 200

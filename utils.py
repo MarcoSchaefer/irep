@@ -1,8 +1,9 @@
 import hashlib
 import re
 import requests
+import jwt
 
-from config import ALLOWED_EXTENSIONS
+from config import ALLOWED_EXTENSIONS, JWT_KEY
 
 
 def encrypt(password):
@@ -33,3 +34,12 @@ class HttpRequest:
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def CreateToken(payload):
+    token = jwt.encode(payload, JWT_KEY, algorithm='HS256')
+    str_token = token.decode("utf-8")
+    return str_token
+
+def DecodeToken(auth):
+    token = auth.split(" ", 2)[1]
+    return jwt.decode(token, JWT_KEY, algorithms=['HS256'])

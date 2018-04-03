@@ -7,10 +7,9 @@ if parentPath not in sys.path:
 
 from main import db
 from models.role import Role
-#from models.team import Team
 
 class User(db.Model):
-    id = db.Column(mysql.INTEGER(50), primary_key=True)
+    id = db.Column(mysql.INTEGER(50), primary_key=True, autoincrement=True)
     name = db.Column(db.String(120), unique=False, nullable=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(100), unique=False, nullable=True)
@@ -32,8 +31,8 @@ class User(db.Model):
             'email': self.email,
             'role': self.role.toJSON(),
             'regDate': self.regDate,
-            'team':self.team.toJSONmin(),
-            'picture': self.picture
+            'picture': self.picture,
+            'coins':self.coins
             }
 
     def toJSONmin(self):

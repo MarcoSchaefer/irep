@@ -7,7 +7,7 @@ if parentPath not in sys.path:
 
 from main import db
 from models.republic import Republic
-from guard import Auth, GetUserID
+from guard import Auth, GetUserID, CheckPermission
 import requests
 
 
@@ -15,5 +15,29 @@ bp_republics = Blueprint('bp_republics', __name__)
 
 @bp_republics.route('/', methods = ['GET'])
 @Auth
-def Ping():
-    return "pong",200;
+def GetAllReps():
+    reps = Republic.query.all()
+    return jsonify([r.toJSON() for r in reps]), 200
+
+@bp_republics.route('/<int:rep_id>', methods = ['GET'])
+@Auth
+def GetRep(rep_id):
+    rep = Republic.query.filter_by(id=rep_id).first()
+    if not rep:
+        return jsonify({'error':'republic not found'}), 404
+    return jsonify(rep.toJSON()), 200
+
+@bp_republics.route('/', methods = ['POST'])
+@Auth
+@CheckPermission
+def CreateRepublic():
+    rep_exists = Republic.query.filter_by(name=request.form['name']).first()
+    if rep_exists:
+        return jsonify({'error':'republic already registered'}), 400
+    rep = Republic(
+        name = request.form['name'],
+        address = request.form['address']
+    )
+    db.session.add(rep)
+    db.session.commit()
+    return jsonify(rep.toJSON()), 201

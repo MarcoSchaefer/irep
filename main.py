@@ -17,18 +17,20 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 db = SQLAlchemy(app)
 
+from models.playercall import Playercall
 from resources.users import bp_users
 from resources.market import bp_market
 from resources.players import bp_players
 from resources.republics import bp_republics
 from resources.teams import bp_teams
+from resources.session import bp_session
 
-
-app.register_blueprint(bp_users)
-app.register_blueprint(bp_players)
-app.register_blueprint(bp_republics)
-app.register_blueprint(bp_users)
-app.register_blueprint(bp_teams)
+app.register_blueprint(bp_session, url_prefix='/session')
+app.register_blueprint(bp_users, url_prefix='/users')
+app.register_blueprint(bp_players, url_prefix='/players')
+app.register_blueprint(bp_republics, url_prefix='/republics')
+app.register_blueprint(bp_market, url_prefix='/market')
+app.register_blueprint(bp_teams, url_prefix='/teams')
 
 
 @app.route('/', methods=['GET'])

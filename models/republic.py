@@ -6,12 +6,10 @@ if parentPath not in sys.path:
     sys.path.insert(0, parentPath)
 
 from main import db
-#from models.player import Player
-from models.team import Team
 
 class Republic(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
-    name = db.Column(db.String(120), unique=False, nullable=True)
+    name = db.Column(db.String(120), unique=True, nullable=False)
     address = db.Column(db.Text, unique=False, nullable=False)
     players = db.relationship("Player")
     picture = db.Column(db.Text, unique=False, nullable=True)
@@ -24,7 +22,7 @@ class Republic(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'position': self.position,
-            'value':self.value,
-            'picture': self.picture
+            'address': self.address,
+            'picture': self.picture,
+            'players':[p.toJSONmin() for p in self.players]
             }

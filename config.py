@@ -15,3 +15,8 @@ UPLOAD_FOLDER = './images'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg'])
 
 MAX_CONTENT_LENGTH = 2 * 1024 * 1024
+
+PERMISSIONS_REQUIRED = {
+    'CreateRepublic':['create_rep'],
+    'CreatePlayer':['create_player']
+    }
