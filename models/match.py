@@ -6,12 +6,14 @@ if parentPath not in sys.path:
     sys.path.insert(0, parentPath)
 
 from main import db
+from models.republic import Republic
 
 class Match(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
     republic_home_id = db.Column(db.Integer, db.ForeignKey('republic.id'),nullable=False)
     republic_away_id = db.Column(db.Integer, db.ForeignKey('republic.id'),nullable=False)
-    republic = db.relationship("Republic")
+    republic_home = db.relationship("Republic", foreign_keys=[republic_home_id])
+    republic_away = db.relationship("Republic", foreign_keys=[republic_away_id])
     score_home = db.Column(mysql.INTEGER(50), unique=False, nullable=True)
     score_away = db.Column(mysql.INTEGER(50), unique=False, nullable=True)
     time = db.Column(db.String(100), unique=False, nullable=True)
@@ -23,18 +25,10 @@ class Match(db.Model):
     def toJSON(self):
         return {
             'id': self.id,
-            'name': self.name,
-            'republic':self.republic.toJSONmin(),
-            'position': self.position.name,
-            'value':self.value,
-            'benched': self.benched,
-            'agregado': self.agregado
-            }
-
-    def toJSONmin(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'position': self.position.name,
-            'value':self.value
+            'republic_home': self.republic_home.toJSONmin(),
+            'republic_away':self.republic_away.toJSONmin(),
+            'score_home': self.score_home,
+            'score_away':self.score_away,
+            'time': self.time,
+            'place': self.place
             }
