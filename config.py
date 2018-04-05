@@ -4,7 +4,11 @@ JWT_KEY = "14834c55af7e2ca2adda98495f6e64a2cc032cb7"
 
 JWT_LIFETIME = 3600*6 #seconds
 
-DATABASE_URI = "mysql+pymysql://root:123890q@localhost/interrep"
+#Localhost
+#DATABASE_URI = "mysql+pymysql://root:123890q@localhost/interrep"
+
+#Heroku
+DATABASE_URI = "mysql+pymysql://i15wen96kq8gpz08:h00gonk9n0ysxg9o@cdm1s48crk8itlnr.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/m49pi0jo12u2bbib"
 
 PASSWORD_MIN_LENGTH = 6
 
