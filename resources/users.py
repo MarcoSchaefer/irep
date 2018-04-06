@@ -29,24 +29,6 @@ def GetPicture(user_id):
         return jsonify({'picture_url':user.picture}), 200
     return send_file(user.picture, mimetype='image/gif')
 
-
-@bp_users.route('/me/picture', methods = ['POST'])
-@Auth
-def ChangePicture():
-    if 'file' not in request.files or request.files['file'].filename == '':
-        return jsonify({'error':'no image received'}), 400
-    file = request.files['file']
-    if not file or not allowed_file(file.filename):
-        return jsonify({'error':'invalid file'}), 400
-    user_id = GetUserID()
-    filename = secure_filename(file.filename)
-    filename = str(user_id)+'.'+filename.split('.')[1]
-    file.save(os.path.join(UPLOAD_FOLDER, filename))
-    user = User.query.filter_by(id=user_id).first()
-    user.picture = UPLOAD_FOLDER+"/"+filename
-    db.session.commit()
-    return jsonify({'status':'success'}), 200
-
 @bp_users.route('/', methods = ['POST'])
 def Register():
     if not isValidEmail(request.form['email']):
@@ -87,7 +69,7 @@ def GetOwnInfo():
     user_id = GetUserID()
     user = User.query.filter_by(id=user_id).first()
     if not user:
-        return jsonify({'error':"user not found"}), 500
+        return jsonify({'error':"user not found"}), 400
     return jsonify(user.toJSON()), 200
 
 @bp_users.route('/<int:user_id>', methods = ['GET'])
@@ -95,7 +77,7 @@ def GetOwnInfo():
 def GetUserInfo(user_id):
     user = User.query.filter_by(id=user_id).first()
     if not user:
-        return jsonify({'error':"user not found"}), 500
+        return jsonify({'error':"user not found"}), 400
     return jsonify(user.toJSONmin()), 200
 
 @bp_users.route('/me', methods = ['PUT'])
@@ -104,10 +86,8 @@ def EditProfile():
     user_id = GetUserID()
     user = User.query.filter_by(id=user_id).first()
     if not user:
-        return jsonify({'error':"user not found"}), 500
-    name = request.form['name']
-    birthday = request.form['birthday']
-    user.name = name
-    user.birthday = birthday
+        return jsonify({'error':"user not found"}), 400
+    user.name = request.form['name']
+    user.birthday = request.form['picture']
     db.session.commit()
-    return jsonify(user.toJSON()), 200
+    return jsonify(user.toJSON()), 201
