@@ -39,7 +39,7 @@ def AddPlayerToTeam():
     if not player:
         return jsonify({"error":"player not found"}), 400
     if user.coins < player.value:
-        return jsonify({"error":"insufficient coins"}), 401
+        return jsonify({"error":"insufficient coins"}), 400
     has_gk = False
     for p in user.teams[0].players:
         if p.position.name=="Goleiro":
@@ -79,7 +79,7 @@ def SellPlayer(player_id):
 def CreateTeam():
     user = getUserFromRequest()
     if len(user.teams) > 0:
-        return jsonify({"error":"you already have a team"}), 401
+        return jsonify({"error":"you already have a team"}), 400
     team = Team(
         name = request.form['name'],
         user_id = GetUserID(),

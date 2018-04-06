@@ -24,11 +24,11 @@ def Login():
         password = encrypt(password)
     user = User.query.filter_by(email=request.form['email']).first()
     if not user:
-        return jsonify({'error':'email not registered'}), 401
+        return jsonify({'error':'Email não registrado'}), 400
     if not user.password:
-        return jsonify({'error':'this account can only be accessed through facebook authentication'}), 400
+        return jsonify({'error':'Essa conta está vinculada ao login pelo Facebook'}), 400
     if not user.password == password:
-        return jsonify({'error':'wrong password'}), 401
+        return jsonify({'error':'Senha incorreta'}), 400
     token = CreateToken({'user_id':user.id,'exp':int(time.time())+JWT_LIFETIME})
     return jsonify({'status':'success','token':token}), 200
 
@@ -40,10 +40,10 @@ def FBLogin():
     fbresponse = requests.post("https://graph.facebook.com/me?fields=name,picture,email", headers={"Authorization":FBtoken})
     if fbresponse.status_code >= 400:
         print(fbresponse)
-        return jsonify({'error':'invalid token'}), 401
+        return jsonify({'error':'Token inválido'}), 400
     fbresponse = fbresponse.json()
     if not fbresponse['email']:
-        return jsonify({'error':"facebook api didn't returned any email"}), 500
+        return jsonify({'error':"Erro na API do Facebook"}), 500
     user = User.query.filter_by(email=fbresponse['email']).first()
     if user:
         return jsonify(user.toJSON()), 200
@@ -63,14 +63,14 @@ def FBLogin():
 @bp_session.route('/refresh', methods=['GET'])
 def refreshToken():
     if not request.headers.get('authorization'):
-        return jsonify({'error':'a token is required'}), 401
+        return jsonify({'error':'É necessário realizar login'}), 400
     auth = request.headers.get('authorization')
     try:
         token = DecodeToken(auth)
     except jwt.ExpiredSignatureError:
-        return jsonify({'error':'token timeout'}), 401
+        return jsonify({'error':'Token de acesso expirou'}), 400
     except jwt.InvalidTokenError:
-        return jsonify({'error':'invalid token'}), 401
+        return jsonify({'error':'Token inválido'}), 400
     oldToken = DecodeToken(request.headers.get('authorization'))
     token = CreateToken({'user_id':oldToken['user_id'],'exp':int(time.time())+JWT_LIFETIME})
     return jsonify({'status':'success','token':token}), 200

@@ -21,6 +21,7 @@ class Player(db.Model):
     value = db.Column(mysql.INTEGER(50), unique=False, nullable=False)
     benched = db.Column(db.Boolean, unique=False, nullable=False)
     agregado = db.Column(db.Boolean, unique=False, nullable=False)
+    #points = db.relationship("PlayerPoints")
 
     def __repr__(self):
         return '<id:%r>' % (self.id)
