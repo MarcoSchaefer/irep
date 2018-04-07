@@ -40,18 +40,12 @@ def CreatePlayer():
         benched = False
     else:
         benched = True
-    agregado = request.form['agregado']
-    if agregado in ["false","0","False"]:
-        agregado = False
-    else:
-        agregado = True
     player = Player(
         name = request.form['name'],
         republic_id = request.form['republic_id'],
         position = request.form['position'],
         value = request.form['value'],
-        benched = benched,
-        agregado = agregado
+        benched = benched
     )
     db.session.add(player)
     db.session.commit()
@@ -95,11 +89,6 @@ def ModifyPlayer(player_id):
         benched = False
     else:
         benched = True
-    agregado = request.form['agregado']
-    if agregado in ["false","0","False"]:
-        agregado = False
-    else:
-        agregado = True
     db.session.delete(player)
     player = Player(
         id = player_id,
@@ -107,8 +96,7 @@ def ModifyPlayer(player_id):
         republic_id = request.form['republic_id'],
         position = request.form['position'],
         value = request.form['value'],
-        benched = benched,
-        agregado = agregado
+        benched = benched
     )
     db.session.add(player)
     db.session.commit()

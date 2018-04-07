@@ -30,7 +30,7 @@ def Login():
     if not user.password == password:
         return jsonify({'error':'Senha incorreta'}), 400
     token = CreateToken({'user_id':user.id,'exp':int(time.time())+JWT_LIFETIME})
-    return jsonify({'status':'success','token':token}), 200
+    return jsonify({'status':'success','token':token,'permissions':user.role.toJSON()['permissions']}), 200
 
 #Necessita do token de acesso do FB enviado no header Authentication
 @bp_session.route('/FBlogin', methods=['POST'])

@@ -10,7 +10,6 @@ from main import db
 class Republic(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
-    address = db.Column(db.Text, unique=False, nullable=False)
     players = db.relationship("Player", cascade="delete")
     picture = db.Column(db.Text, unique=False, nullable=True)
 
@@ -22,7 +21,6 @@ class Republic(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'address': self.address,
             'picture': self.picture,
             'players':[p.toJSONmin() for p in self.players]
             }
@@ -31,6 +29,5 @@ class Republic(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'address': self.address,
             'picture': self.picture
             }

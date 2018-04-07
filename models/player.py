@@ -18,9 +18,8 @@ class Player(db.Model):
     republic_id = db.Column(db.Integer, db.ForeignKey('republic.id'),nullable=False)
     republic = db.relationship("Republic")
     position = db.Column(Enum(Positions), unique=False, nullable=False)
-    value = db.Column(mysql.INTEGER(50), unique=False, nullable=False)
+    value = db.Column(db.Float, unique=False, nullable=False)
     benched = db.Column(db.Boolean, unique=False, nullable=False)
-    agregado = db.Column(db.Boolean, unique=False, nullable=False)
     #points = db.relationship("PlayerPoints")
 
     def __repr__(self):
@@ -33,8 +32,7 @@ class Player(db.Model):
             'republic':self.republic.toJSONmin(),
             'position': self.position.name,
             'value':self.value,
-            'benched': self.benched,
-            'agregado': self.agregado
+            'benched': self.benched
             }
 
     def toJSONmin(self):

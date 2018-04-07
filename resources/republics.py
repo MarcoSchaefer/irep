@@ -36,7 +36,6 @@ def CreateRepublic():
         return jsonify({'error':'republic already registered'}), 400
     rep = Republic(
         name = request.form['name'],
-        address = request.form['address'],
         picture = request.form['picture']
     )
     db.session.add(rep)
@@ -62,7 +61,6 @@ def ModifyRepublic(rep_id):
     if not rep:
         return jsonify({'error':'republic not found'}), 404
     rep.name = request.form['name']
-    rep.address = request.form['address']
     rep.picture = request.form['picture']
     db.session.merge(rep)
     db.session.commit()

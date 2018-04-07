@@ -14,8 +14,7 @@ class Team(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship("User", back_populates="teams")
     players = db.relationship("Player",secondary=playercall_table)
-    points = db.Column(mysql.INTEGER(50), unique=False, nullable=False)
-    last_points = db.Column(mysql.INTEGER(50), unique=False, nullable=True)
+    #points = db.relationship("TeamPoints")
 
 
     def __repr__(self):
@@ -26,8 +25,7 @@ class Team(db.Model):
         return {
             'id': self.id,
             'name': self.name,
-            'points':self.points,
-            'last_points':self.last_points,
+            #'points':self.points,
             'user': self.user.toJSON(),
             'players':[p.toJSON() for p in self.players]
             }
