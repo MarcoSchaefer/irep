@@ -82,9 +82,19 @@ def CreateTeam():
         return jsonify({"error":"you already have a team"}), 400
     team = Team(
         name = request.form['name'],
-        user_id = GetUserID(),
-        points = 0
+        user_id = GetUserID()
         )
     db.session.add(team)
     db.session.commit()
     return jsonify(team.toJSON()),201;
+
+@bp_teams.route('/me', methods = ['PUT'])
+@Auth
+def ChangeTeamName():
+    team = Team.query.filter_by(user_id = GetUserID()).first()
+    if not team:
+        return jsonify({"error":"Time não encontrado"}), 400
+    team.name = request.form['name']
+    db.session.merge(team)
+    db.session.commit()
+    return jsonify(team.toJSON()),201

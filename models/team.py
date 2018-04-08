@@ -26,6 +26,6 @@ class Team(db.Model):
             'id': self.id,
             'name': self.name,
             #'points':self.points,
-            'user': self.user.toJSON(),
+            'user': self.user.toJSONmin(),
             'players':[p.toJSON() for p in self.players]
             }

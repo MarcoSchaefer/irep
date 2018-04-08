@@ -9,6 +9,7 @@ if parentPath not in sys.path:
 
 from main import db
 from models.user import User
+from models.team import Team
 from utils import encrypt, isValidEmail, allowed_file
 from config import PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH, ALLOWED_EXTENSIONS, UPLOAD_FOLDER
 from guard import Auth, GetUserID
@@ -32,14 +33,14 @@ def GetPicture(user_id):
 @bp_users.route('/', methods = ['POST'])
 def Register():
     if not isValidEmail(request.form['email']):
-        return jsonify({'error':'invalid email'}), 400
+        return jsonify({'error':'E-mail inválido'}), 400
     if len(request.form['password'])<PASSWORD_MIN_LENGTH:
-        return jsonify({'error':'password too short'}), 400
+        return jsonify({'error':'Senha muito curta'}), 400
     if len(request.form['password'])>PASSWORD_MAX_LENGTH:
-        return jsonify({'error':'password too long'}), 400
+        return jsonify({'error':'Senha muito longa'}), 400
     exists = User.query.filter_by(email=request.form['email']).first()
     if exists:
-        return jsonify({'error':'email already registered'}), 400
+        return jsonify({'error':'Email já registrado'}), 400
     name = request.form['name']
     if not len(name):
         name = None
@@ -52,6 +53,12 @@ def Register():
         coins = 0
     )
     db.session.add(user)
+    db.session.commit()
+    team = Team(
+        name = 'Nome do seu time',
+        user_id = user.id
+        )
+    db.session.add(team)
     db.session.commit()
     return jsonify(user.toJSON()), 201
 
