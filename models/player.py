@@ -50,9 +50,24 @@ class Player(db.Model):
     def getLastPoints(self):
         if not self.points:
             return 0
-        return self.points[-1]
+        return self.points[-1].points
 
     def getAveragePoints(self):
-        pointsCopy = [p for p in self.points]
+        pointsCopy = [p.points for p in self.points]
         pointsCopy.append(5)
         return reduce((lambda x, y: x + y), [p for p in pointsCopy])/len(pointsCopy)
+
+    def getNextValue(self):
+        t = 20
+        k = 0.15
+        if self.value >= 10:
+            k = 0.5
+        if self.value >= 6 and self.value < 10:
+            k=0.25
+        c = self.value
+        p = self.getLastPoints()
+        m = self.getAveragePoints()
+        x = (p-m)*k
+        a = (t-c)/t
+        v = x*a
+        return self.value + v

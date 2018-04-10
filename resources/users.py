@@ -50,7 +50,7 @@ def Register():
         name = name,
         role_id = 1,
         regDate = time.time(),
-        coins = 0
+        coins = 50
     )
     db.session.add(user)
     db.session.commit()
