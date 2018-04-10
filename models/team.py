@@ -7,6 +7,7 @@ if parentPath not in sys.path:
 
 from main import db
 from models.playercall import playercall_table
+from models.teampoints import TeamPoints
 
 class Team(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
@@ -14,7 +15,7 @@ class Team(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     user = db.relationship("User", back_populates="teams")
     players = db.relationship("Player",secondary=playercall_table)
-    #points = db.relationship("TeamPoints")
+    points = db.relationship("TeamPoints", cascade="delete")
 
 
     def __repr__(self):

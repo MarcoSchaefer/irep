@@ -23,13 +23,14 @@ class Role(db.Model):
     create_match = db.Column(db.Boolean, unique=False, nullable=False)
     update_match = db.Column(db.Boolean, unique=False, nullable=False)
     delete_match = db.Column(db.Boolean, unique=False, nullable=False)
+    admin_panel = db.Column(db.Boolean, unique=False, nullable=False)
 
 
     def __repr__(self):
         return 'id:%r name:%r' % (self.id,self.name)
 
     def toJSON(self):
-        permissions = ['create_player','modify_player','delete_player','create_rep','modify_rep','delete_rep','toggle_market','give_points','create_match','update_match','delete_match']
+        permissions = ['create_player','modify_player','delete_player','create_rep','modify_rep','delete_rep','toggle_market','give_points','create_match','update_match','delete_match','admin_panel']
         has_permissions = []
         for p in permissions:
             if getattr(self,p):

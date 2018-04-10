@@ -18,7 +18,7 @@ class User(db.Model):
     regDate = db.Column(mysql.INTEGER(50), unique=False, nullable=False)
     teams = db.relationship("Team", back_populates="user")
     picture = db.Column(db.Text, unique=False, nullable=True)
-    coins = db.Column(mysql.INTEGER(50), primary_key=True)
+    coins = db.Column(db.Float, primary_key=True)
 
 
     def __repr__(self):

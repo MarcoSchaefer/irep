@@ -20,6 +20,12 @@ def GetAllPlayers():
     player = Player.query.all()
     return jsonify([p.toJSON() for p in player]), 200
 
+@bp_players.route('/active', methods = ['GET'])
+@Auth
+def GetActivePlayers():
+    player = Player.query.filter_by(benched=False).all()
+    return jsonify([p.toJSON() for p in player]), 200
+
 @bp_players.route('/<int:player_id>', methods = ['GET'])
 @Auth
 def GetPlayer(player_id):

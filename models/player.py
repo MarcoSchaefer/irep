@@ -1,4 +1,5 @@
 from sqlalchemy.dialects import mysql
+from functools import reduce
 from sqlalchemy.types import Enum
 import enum
 import os, sys
@@ -7,6 +8,7 @@ if parentPath not in sys.path:
     sys.path.insert(0, parentPath)
 
 from main import db
+from models.playerpoints import PlayerPoints
 
 class Positions(enum.Enum):
     Goleiro = 1
@@ -20,10 +22,10 @@ class Player(db.Model):
     position = db.Column(Enum(Positions), unique=False, nullable=False)
     value = db.Column(db.Float, unique=False, nullable=False)
     benched = db.Column(db.Boolean, unique=False, nullable=False)
-    #points = db.relationship("PlayerPoints")
+    points = db.relationship(PlayerPoints, cascade="delete")
 
     def __repr__(self):
-        return '<id:%r>' % (self.id)
+        return '<id:%r position:%r>' % (self.id, self.position)
 
     def toJSON(self):
         return {
@@ -32,7 +34,9 @@ class Player(db.Model):
             'republic':self.republic.toJSONmin(),
             'position': self.position.name,
             'value':self.value,
-            'benched': self.benched
+            'benched': self.benched,
+            'average': self.getAveragePoints(),
+            'last': self.getLastPoints()
             }
 
     def toJSONmin(self):
@@ -42,3 +46,13 @@ class Player(db.Model):
             'position': self.position.name,
             'value':self.value
             }
+
+    def getLastPoints(self):
+        if not self.points:
+            return 0
+        return self.points[-1]
+
+    def getAveragePoints(self):
+        pointsCopy = [p for p in self.points]
+        pointsCopy.append(5)
+        return reduce((lambda x, y: x + y), [p for p in pointsCopy])/len(pointsCopy)
