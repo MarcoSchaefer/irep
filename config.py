@@ -29,7 +29,7 @@ PERMISSIONS_REQUIRED = {
     'DeletePlayer':['delete_player'],
     'ToggleMarket':['toggle_market'],
     'SetDeadline':['toggle_market'],
-    'ModifyPlayerValue':['modify_player'],
+    'GivePlayerPoints':['modify_player'],
     'CreateMatch':['create_match'],
     'UpdateMatch':['update_match'],
     'DeleteMatch':['delete_match']

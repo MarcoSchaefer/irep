@@ -68,10 +68,10 @@ def DeletePlayer(player_id):
     db.session.commit()
     return jsonify({'status':'deleted'}), 201
 
-@bp_players.route('/<int:player_id>/value', methods = ['PUT'])
+@bp_players.route('/<int:player_id>/points', methods = ['POST'])
 @Auth
 @CheckPermission
-def ModifyPlayerValue(player_id):
+def GivePlayerPoints(player_id):
     player = Player.query.filter_by(id=player_id).first()
     if not player:
         return jsonify({'error':'player not found'}), 404

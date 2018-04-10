@@ -50,10 +50,10 @@ class Player(db.Model):
     def getLastPoints(self):
         if not self.points:
             return 0
-        return self.points[-1]
+        return self.points[-1].points
 
     def getAveragePoints(self):
-        pointsCopy = [p for p in self.points]
+        pointsCopy = [p.points for p in self.points]
         pointsCopy.append(5)
         return reduce((lambda x, y: x + y), [p for p in pointsCopy])/len(pointsCopy)
 
