@@ -46,6 +46,8 @@ def CreatePlayer():
         benched = False
     else:
         benched = True
+    if float(request.form['value']) <= 0:
+        return jsonify({'error':'Valor inválido'}), 400
     player = Player(
         name = request.form['name'],
         republic_id = request.form['republic_id'],
