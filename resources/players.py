@@ -145,4 +145,4 @@ def GivePlayersScore():
     for p in players:
         db.session.merge(p)
     db.session.commit()
-    return jsonify({'status':'Pontuações adicionadas com sucesso'}),201;
+    return jsonify([p.toJSON() for p in players]),201;

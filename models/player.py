@@ -66,6 +66,7 @@ class Player(db.Model):
             round = 1;
         else:
             round = self.points[-1].round+1
+        m = self.getAveragePoints()
         newPoints = PlayerPoints(
             player_id = self.id,
             round = round,
@@ -73,10 +74,10 @@ class Player(db.Model):
             )
         db.session.add(newPoints)
         self.points.append(newPoints)
-        self.value = self.getNextValue()
+        self.value = self.getNextValue(m)
         return self
 
-    def getNextValue(self):
+    def getNextValue(self,previous_m):
         t = 20
         k = 0.15
         if self.value >= 10:
@@ -85,8 +86,9 @@ class Player(db.Model):
             k=0.25
         c = self.value
         p = self.getLastPoints()
-        m = self.getAveragePoints()
+        m = previous_m
         x = (p-m)*k
+        print(m)
         a = (t-c)/t
         v = x*a
         return self.value + v
