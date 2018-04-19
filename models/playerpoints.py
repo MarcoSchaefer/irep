@@ -23,3 +23,9 @@ class PlayerPoints(db.Model):
             'round': self.round,
             'points': self.points
             }
+
+    def toJSONmin(self):
+        return {
+            'round': self.round,
+            'points': self.points
+            }

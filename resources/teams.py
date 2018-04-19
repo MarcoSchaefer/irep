@@ -85,7 +85,9 @@ def ChangeTeamPlayers():
         return jsonify({"error":"Seu time deve ter exatamente 1 goleiro"}), 400
     user = getUserFromRequest()
     totalValue = reduce((lambda x, y: x + y), [p.value for p in players])
-    ownTeamValue = reduce((lambda x, y: x + y), [p.value for p in team.players])
+    ownTeamValue = 0
+    if len(team.players):
+        ownTeamValue = reduce((lambda x, y: x + y), [p.value for p in team.players])
     if totalValue>user.coins+ownTeamValue:
         return jsonify({"error":"Patrimônio insuficiente"}), 400
     team.players = players

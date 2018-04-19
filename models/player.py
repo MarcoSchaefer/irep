@@ -33,10 +33,11 @@ class Player(db.Model):
             'name': self.name,
             'republic':self.republic.toJSONmin(),
             'position': self.position.name,
-            'value':self.value,
+            'value':float("{0:.2f}".format(self.value)),
             'benched': self.benched,
-            'average': self.getAveragePoints(),
-            'last': self.getLastPoints()
+            'average': float("{0:.2f}".format(self.getAveragePoints())),
+            'last': float("{0:.2f}".format(self.getLastPoints())),
+            'points': [p.toJSONmin() for p in self.points]
             }
 
     def toJSONmin(self):
@@ -44,7 +45,10 @@ class Player(db.Model):
             'id': self.id,
             'name': self.name,
             'position': self.position.name,
-            'value':self.value
+            'value':float("{0:.2f}".format(self.value)),
+            'benched': self.benched,
+            'average': float("{0:.2f}".format(self.getAveragePoints())),
+            'last': float("{0:.2f}".format(self.getLastPoints()))
             }
 
     def getLastPoints(self):
@@ -56,6 +60,21 @@ class Player(db.Model):
         pointsCopy = [p.points for p in self.points]
         pointsCopy.append(5)
         return reduce((lambda x, y: x + y), [p for p in pointsCopy])/len(pointsCopy)
+
+    def newScore(self,score):
+        if len(self.points) == 0:
+            round = 1;
+        else:
+            round = self.points[-1].round+1
+        newPoints = PlayerPoints(
+            player_id = self.id,
+            round = round,
+            points = score
+            )
+        db.session.add(newPoints)
+        self.points.append(newPoints)
+        self.value = self.getNextValue()
+        return self
 
     def getNextValue(self):
         t = 20

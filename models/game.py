@@ -8,7 +8,7 @@ if parentPath not in sys.path:
 from main import db
 from models.republic import Republic
 
-class Match(db.Model):
+class Game(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
     republic_home_id = db.Column(db.Integer, db.ForeignKey('republic.id'),nullable=False)
     republic_away_id = db.Column(db.Integer, db.ForeignKey('republic.id'),nullable=False)

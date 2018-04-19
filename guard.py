@@ -42,7 +42,7 @@ def CheckPermission(f):
         user = getUserFromRequest()
         for p in permissions_required:
             if not getattr(user.role,p):
-                return jsonify({'error':'insufficient permissions'}), 401
+                return jsonify({'error':'Você não tem permissão para fazer isso'}), 401
         return f(*args, **kwargs)
     decorated.__name__ = f.__name__
     return decorated
