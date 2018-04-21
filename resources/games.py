@@ -50,8 +50,8 @@ def UpdateGame(game_id):
     game = Game.query.filter_by(id=game_id).first()
     if not game:
         return jsonify({'error':'Partida não encontrada'}),400;
-    Game.score_home = request.form['score_home']
-    Game.score_away = request.form['score_away']
+    game.score_home = request.form['score_home']
+    game.score_away = request.form['score_away']
     db.session.merge(game)
     db.session.commit()
     return jsonify(game.toJSON()),201;
