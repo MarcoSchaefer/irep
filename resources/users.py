@@ -66,6 +66,7 @@ def Register():
     return jsonify(user.toJSON()), 201
 
 
+
 @bp_users.route('/', methods = ['GET'])
 @Auth
 def GetAllUsers():
