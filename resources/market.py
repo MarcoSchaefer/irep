@@ -7,6 +7,7 @@ if parentPath not in sys.path:
 
 from main import db
 from models.market import Market
+from models.team import Team
 from guard import Auth, GetUserID, CheckPermission
 import requests
 
@@ -24,6 +25,8 @@ def GetMarket():
 @CheckPermission
 def ToggleMarket():
     market = Market.query.first()
+    if market.open:
+        market.round += 1
     market.open = not market.open
     db.session.merge(market)
     db.session.commit()
@@ -34,7 +37,14 @@ def ToggleMarket():
 @CheckPermission
 def SetDeadline():
     market = Market.query.first()
-    market.deadline = request.form['deadline']
+    deadline = 0
+    try:
+        deadline = int(request.form['deadline']);
+    except:
+        pass
+    if not deadline > 0:
+        return jsonify({'error':'Por favor, selecione data, hora e turno'}),400;
+    market.deadline = deadline
     db.session.merge(market)
     db.session.commit()
     return jsonify(market.toJSON()),200;

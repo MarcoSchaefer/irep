@@ -8,6 +8,8 @@ if parentPath not in sys.path:
 from main import db
 from models.player import Player, Positions
 from models.republic import Republic
+from models.market import Market
+from models.playerpoints import PlayerPoints
 from guard import Auth, GetUserID, CheckPermission
 import requests
 
@@ -24,7 +26,9 @@ def GetAllPlayers():
 @Auth
 def GetActivePlayers():
     player = Player.query.filter_by(benched=False).all()
-    return jsonify([p.toJSON() for p in player]), 200
+    players = [p.toJSON() for p in player]
+    players.sort(key=lambda player: player['average'], reverse=True)
+    return jsonify(players), 200
 
 @bp_players.route('/<int:player_id>', methods = ['GET'])
 @Auth
@@ -131,6 +135,9 @@ def ModifyPlayer(player_id):
 @Auth
 @CheckPermission
 def GivePlayersScore():
+    market = Market.query.first()
+    if market.open:
+        return jsonify({'error':'Você não pode dar pontos a um jogador enquanto o mercado estiver aberto'}),400;
     playersids = request.form.getlist('players')
     for pid in playersids:
         player = Player.query.filter_by(id=pid).first()
@@ -141,7 +148,13 @@ def GivePlayersScore():
     if not len(points) == len(players):
         return jsonify({'error':'Número de argumentos inválido'}),400;
     for pindex in range(len(players)):
-        players[pindex].newScore(float(points[pindex]))
+        playerpoints = PlayerPoints.query.filter_by(player_id = players[pindex].id,round=market.round).first()
+        if playerpoints:
+            for t in players[pindex].teams:
+                t.newScore(-1*players[pindex].getPointsInRound(market.round),market.round)
+        players[pindex].newScore(float(points[pindex]),market.round)
+        for t in players[pindex].teams:
+            t.newScore(float(points[pindex]),market.round)
     for p in players:
         db.session.merge(p)
     db.session.commit()

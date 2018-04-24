@@ -10,7 +10,7 @@ from main import db
 class Republic(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
-    players = db.relationship("Player", cascade="delete")
+    players = db.relationship("Player", cascade="delete", lazy="joined")
     picture = db.Column(db.Text, unique=False, nullable=True)
 
 

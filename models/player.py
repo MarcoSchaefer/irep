@@ -8,6 +8,7 @@ if parentPath not in sys.path:
     sys.path.insert(0, parentPath)
 
 from main import db
+from models.playercall import playercall_table
 from models.playerpoints import PlayerPoints
 
 class Positions(enum.Enum):
@@ -18,11 +19,12 @@ class Player(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
     name = db.Column(db.String(120), unique=False, nullable=True)
     republic_id = db.Column(db.Integer, db.ForeignKey('republic.id'),nullable=False)
-    republic = db.relationship("Republic")
+    republic = db.relationship("Republic", lazy="joined")
+    teams = db.relationship("Team",secondary=playercall_table)
     position = db.Column(Enum(Positions), unique=False, nullable=False)
     value = db.Column(db.Float, unique=False, nullable=False)
     benched = db.Column(db.Boolean, unique=False, nullable=False)
-    points = db.relationship(PlayerPoints, cascade="delete")
+    points = db.relationship(PlayerPoints, cascade="delete", lazy="joined")
 
     def __repr__(self):
         return '<id:%r position:%r>' % (self.id, self.position)
@@ -56,24 +58,31 @@ class Player(db.Model):
             return 0
         return self.points[-1].points
 
+    def getPointsInRound(self,round):
+        points = PlayerPoints.query.filter_by(player_id=self.id,round=round).first()
+        if not points:
+            return 0
+        return points.points
+
     def getAveragePoints(self):
         pointsCopy = [p.points for p in self.points]
         pointsCopy.append(5)
         return reduce((lambda x, y: x + y), [p for p in pointsCopy])/len(pointsCopy)
 
-    def newScore(self,score):
-        if len(self.points) == 0:
-            round = 1;
-        else:
-            round = self.points[-1].round+1
+    def newScore(self,score,round):
         m = self.getAveragePoints()
-        newPoints = PlayerPoints(
-            player_id = self.id,
-            round = round,
-            points = score
-            )
-        db.session.add(newPoints)
-        self.points.append(newPoints)
+        points = PlayerPoints.query.filter_by(player_id=self.id,round=round).first()
+        if not points:
+            newPoints = PlayerPoints(
+                player_id = self.id,
+                round = round,
+                points = score
+                )
+            db.session.add(newPoints)
+            self.points.append(newPoints)
+        else:
+            points.points = score
+            db.session.merge(points)
         self.value = self.getNextValue(m)
         return self
 

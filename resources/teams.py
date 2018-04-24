@@ -19,8 +19,10 @@ bp_teams = Blueprint('bp_teams', __name__)
 @bp_teams.route('/', methods = ['GET'])
 @Auth
 def GetAllTeams():
-    teams = Team.query.all()
-    return jsonify([t.toJSON() for t in teams]),200;
+    team = Team.query.all()
+    teams = [t.toJSONmin() for t in team]
+    teams.sort(key=lambda team: team['points'], reverse=True)
+    return jsonify(teams),200;
 
 @bp_teams.route('/me', methods = ['GET'])
 @Auth

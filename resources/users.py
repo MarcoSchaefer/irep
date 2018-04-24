@@ -43,7 +43,10 @@ def Register():
         return jsonify({'error':'Email já registrado'}), 400
     name = request.form['name']
     if not len(name):
-        name = None
+        return jsonify({'error':'É necessário informar um nome'}), 400
+    exists = User.query.filter_by(name=request.form['name']).first()
+    if exists:
+        return jsonify({'error':'Nome já registrado'}), 400
     user = User(
         email = request.form['email'],
         password = encrypt(request.form['password']),
@@ -55,7 +58,7 @@ def Register():
     db.session.add(user)
     db.session.commit()
     team = Team(
-        name = 'Nome do seu time',
+        name = 'Time de '+name,
         user_id = user.id
         )
     db.session.add(team)

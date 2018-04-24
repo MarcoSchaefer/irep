@@ -11,6 +11,7 @@ class Market(db.Model):
     id = db.Column(mysql.INTEGER(50), primary_key=True)
     deadline = db.Column(mysql.INTEGER(50), unique=False, nullable=False)
     open = db.Column(db.Boolean, unique=False, nullable=False)
+    round = db.Column(mysql.INTEGER(50), unique=False, nullable=False)
 
     def __repr__(self):
         return '<open:%r>' % (self.open)
@@ -18,5 +19,6 @@ class Market(db.Model):
     def toJSON(self):
         return {
             'deadline': self.deadline,
-            'open': self.open
+            'open': self.open,
+            'round': self.round
             }
