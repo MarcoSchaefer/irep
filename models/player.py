@@ -46,6 +46,7 @@ class Player(db.Model):
         return {
             'id': self.id,
             'name': self.name,
+            'republic':self.republic.toJSONmin(),
             'position': self.position.name,
             'value':float("{0:.2f}".format(self.value)),
             'benched': self.benched,

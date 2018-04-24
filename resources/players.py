@@ -78,6 +78,16 @@ def DeletePlayer(player_id):
     db.session.commit()
     return jsonify({'status':'deleted'}), 201
 
+@bp_players.route('/most-points', methods = ['GET'])
+@Auth
+def MostPoints():
+    market = Market.query.first()
+    points = PlayerPoints.query.filter_by(round=market.round).order_by(PlayerPoints.points.desc()).all()
+    points = [p.toJSON() for p in points]
+    pointsGoleiro = list(filter(lambda x: x['player']['position'] == "Goleiro", points))
+    pointsLinha = list(filter(lambda x: x['player']['position'] == "Linha", points))
+    return jsonify({"Goleiro":pointsGoleiro[:1],"Linha":pointsLinha[:4]}), 200
+
 @bp_players.route('/<int:player_id>/bench', methods = ['PUT'])
 @Auth
 @CheckPermission

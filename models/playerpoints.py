@@ -10,6 +10,7 @@ from main import db
 
 class PlayerPoints(db.Model):
     player_id = db.Column(mysql.INTEGER(50), db.ForeignKey('player.id'), primary_key=True)
+    player = db.relationship("Player", lazy="joined")
     round = db.Column(mysql.INTEGER(50), primary_key=True)
     points = db.Column(db.Float)
 
@@ -19,7 +20,7 @@ class PlayerPoints(db.Model):
 
     def toJSON(self):
         return {
-            'player_id': self.player_id,
+            'player': self.player.toJSONmin(),
             'round': self.round,
             'points': self.points
             }

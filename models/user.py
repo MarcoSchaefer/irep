@@ -15,7 +15,7 @@ class User(db.Model):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(100), unique=False, nullable=True)
     role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
-    role = db.relationship("Role")
+    role = db.relationship(Role)
     regDate = db.Column(mysql.INTEGER(50), unique=False, nullable=False)
     teams = db.relationship(Team, back_populates="user")
     picture = db.Column(db.Text, unique=False, nullable=True)
