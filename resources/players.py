@@ -10,6 +10,7 @@ from models.player import Player, Positions
 from models.republic import Republic
 from models.market import Market
 from models.playerpoints import PlayerPoints
+from models.playercall import playercall_table
 from guard import Auth, GetUserID, CheckPermission
 import requests
 
@@ -87,6 +88,15 @@ def MostPoints():
     pointsGoleiro = list(filter(lambda x: x['player']['position'] == "Goleiro", points))
     pointsLinha = list(filter(lambda x: x['player']['position'] == "Linha", points))
     return jsonify({"Goleiro":pointsGoleiro[:1],"Linha":pointsLinha[:4]}), 200
+
+@bp_players.route('/most-choosen', methods = ['GET'])
+@Auth
+def MostChoosen():
+    #players = Player.query.all()
+    #for p in players:
+    #    p.n_teams = len(p.teams)
+    #players.sort(key=lambda player: player['average'], reverse=True)
+    return jsonify([]), 200
 
 @bp_players.route('/<int:player_id>/bench', methods = ['PUT'])
 @Auth
