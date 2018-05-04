@@ -51,7 +51,7 @@ def Register():
         email = request.form['email'],
         password = encrypt(request.form['password']),
         name = name,
-        role_id = 1,
+        role_id = 2,
         regDate = time.time(),
         coins = 50
     )

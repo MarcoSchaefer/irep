@@ -51,7 +51,8 @@ class Player(db.Model):
             'value':float("{0:.2f}".format(self.value)),
             'benched': self.benched,
             'average': float("{0:.2f}".format(self.getAveragePoints())),
-            'last': float("{0:.2f}".format(self.getLastPoints()))
+            'last': float("{0:.2f}".format(self.getLastPoints())),
+            'points': [p.toJSONmin() for p in self.points]
             }
 
     def getLastPoints(self):

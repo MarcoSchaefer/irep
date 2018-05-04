@@ -62,7 +62,7 @@ def ChangeTeamName():
 def ChangeTeamPlayers():
     market = Market.query.first()
     if not market.open:
-        return jsonify({"error":"the market is closed"}), 400
+        return jsonify({"error":"O mercado está fechado"}), 400
     team = Team.query.filter_by(user_id = GetUserID()).first()
     if not team:
         return jsonify({"error":"Time não encontrado"}), 400
