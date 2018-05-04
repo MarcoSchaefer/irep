@@ -10,6 +10,7 @@ from main import db
 from models.team import Team
 from models.player import Player
 from models.market import Market
+from models.user import User
 from guard import Auth, GetUserID, getUserFromRequest
 import requests
 
