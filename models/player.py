@@ -72,34 +72,39 @@ class Player(db.Model):
         return reduce((lambda x, y: x + y), [p for p in pointsCopy])/len(pointsCopy)
 
     def newScore(self,score,round):
-        m = self.getAveragePoints()
         points = PlayerPoints.query.filter_by(player_id=self.id,round=round).first()
         if not points:
             newPoints = PlayerPoints(
                 player_id = self.id,
                 round = round,
-                points = score
+                points = score,
+                value = self.value
                 )
+            m = self.getAveragePoints()
             db.session.add(newPoints)
             self.points.append(newPoints)
+            self.value = self.getNextValue(m,self.value)
         else:
             points.points = score
             db.session.merge(points)
-        self.value = self.getNextValue(m)
+            pointsCopy = [p.points for p in self.points[:-1]]
+            pointsCopy.append(5)
+            m = reduce((lambda x, y: x + y), [p for p in pointsCopy])/len(pointsCopy)
+            self.value = self.getNextValue(m,points.value)
         return self
 
-    def getNextValue(self,previous_m):
+    def getNextValue(self,previous_m,value):
         t = 20
         k = 0.15
-        if self.value >= 10:
+        if value >= 10:
             k = 0.5
-        if self.value >= 6 and self.value < 10:
+        if value >= 6 and value < 10:
             k=0.25
-        c = self.value
+        c = value
         p = self.getLastPoints()
         m = previous_m
         x = (p-m)*k
         print(m)
         a = (t-c)/t
         v = x*a
-        return self.value + v
+        return value + v
