@@ -94,17 +94,23 @@ class Player(db.Model):
         return self
 
     def getNextValue(self,previous_m,value):
-        t = 20
-        k = 0.15
-        if value >= 10:
-            k = 0.5
-        if value >= 6 and value < 10:
-            k=0.25
-        c = value
         p = self.getLastPoints()
         m = previous_m
+        t = 20
+        if p < m:
+            k = 0.15
+            if value >= 10:
+                k = 0.5
+            if value >= 6 and value < 10:
+                k=0.25
+        else:
+            k = 0.5
+            if value >= 10:
+                k = 0.15
+            if value >= 6 and value < 10:
+                k=0.25
+        c = value
         x = (p-m)*k
-        print(m)
         a = (t-c)/t
         v = x*a
         return value + v
