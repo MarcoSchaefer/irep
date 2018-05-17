@@ -20,7 +20,7 @@ class Player(db.Model):
     name = db.Column(db.String(120), unique=False, nullable=True)
     republic_id = db.Column(db.Integer, db.ForeignKey('republic.id'),nullable=False)
     republic = db.relationship("Republic", lazy="joined")
-    teams = db.relationship("Team",secondary=playercall_table)
+    teams = db.relationship("Team", lazy="joined", secondary=playercall_table)
     position = db.Column(Enum(Positions), unique=False, nullable=False)
     value = db.Column(db.Float, unique=False, nullable=False)
     benched = db.Column(db.Boolean, unique=False, nullable=False)

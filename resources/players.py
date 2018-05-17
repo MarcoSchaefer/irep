@@ -83,8 +83,18 @@ def DeletePlayer(player_id):
 @Auth
 def MostPoints():
     market = Market.query.first()
+    print("market")
     points = PlayerPoints.query.filter_by(round=market.round).order_by(PlayerPoints.points.desc()).all()
-    points = [p.toJSON() for p in points]
+    print("points")
+    ids = [p.player_id for p in points]
+    print(len(ids))
+    print("ids")
+    players = [p.toJSONmin() for p in db.session.query(Player).filter(Player.id.in_(ids)).all()]
+    print(len(players))
+    print("players")
+    #return jsonify([p.toJSONmin() for p in players]),200
+    points = [{"points":p.points,"player":list(filter(lambda x: x['id'] == p.player_id, players))[0]} for p in points]
+    print("json")
     pointsGoleiro = list(filter(lambda x: x['player']['position'] == "Goleiro", points))
     pointsLinha = list(filter(lambda x: x['player']['position'] == "Linha", points))
     return jsonify({"Goleiro":pointsGoleiro[:1],"Linha":pointsLinha[:4]}), 200
@@ -92,11 +102,15 @@ def MostPoints():
 @bp_players.route('/most-choosen', methods = ['GET'])
 @Auth
 def MostChoosen():
-    #players = Player.query.all()
-    #for p in players:
-    #    p.n_teams = len(p.teams)
-    #players.sort(key=lambda player: player['average'], reverse=True)
-    return jsonify([]), 200
+    players = Player.query.all()
+    for index in range(len(players)):
+        n_teams = len(players[index].teams)
+        players[index] = players[index].toJSON()
+        players[index]['n_teams']  = n_teams
+    players.sort(key=lambda player: player['n_teams'], reverse=True)
+    goleiros = list(filter(lambda x: x['position'] == "Goleiro", players))
+    linhas = list(filter(lambda x: x['position'] == "Linha", players))
+    return jsonify({"Goleiro":goleiros[:1],"Linha":linhas[:4]}), 200
 
 @bp_players.route('/<int:player_id>/bench', methods = ['PUT'])
 @Auth
